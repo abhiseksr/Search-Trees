@@ -1,7 +1,20 @@
 /* AVL tree implementation in C/C++
 Author - Abhishek Kumar */
 #include <iostream>
+#include <queue>
+#include <map>
 using namespace std;
+
+int digitCount(int n)
+{
+    int cnt = 0;
+    while (n)
+    {
+        cnt++;
+        n /= 10;
+    }
+    return cnt;
+}
 
 class AVL
 {
@@ -86,7 +99,6 @@ public:
         return node->depth;
     }
 
-
     // draw the initial and final graph of each cases(take case where every node has two child)\
     and update the nodes depth before rotation
     void helper(AVL *node)
@@ -95,16 +107,15 @@ public:
         {
             if (depthf(node->left->left) > depthf(node->left->right))
             {
-                node->depth = max(depthf(node->right)+1,depthf(node->left->right)+1);
-                node->left->depth = max(depthf(node->left->left)+1, depthf(node)+1);
+                node->depth = max(depthf(node->right) + 1, depthf(node->left->right) + 1);
+                node->left->depth = max(depthf(node->left->left) + 1, depthf(node) + 1);
                 right_rotation(node);
-                
             }
             else
             {
-                node->left->depth = max(depthf(node->left->left)+1,depthf(node->left->right->left)+1);
-                node->depth = max(depthf(node->right)+1,depthf(node->left->right->right)+1);
-                node->left->right->depth = max(depthf(node)+1,depthf(node->left)+1);
+                node->left->depth = max(depthf(node->left->left) + 1, depthf(node->left->right->left) + 1);
+                node->depth = max(depthf(node->right) + 1, depthf(node->left->right->right) + 1);
+                node->left->right->depth = max(depthf(node) + 1, depthf(node->left) + 1);
                 left_rotation(node->left);
                 right_rotation(node);
             }
@@ -113,15 +124,15 @@ public:
         {
             if (depthf(node->right->right) > depthf(node->right->left))
             {
-                node->depth = max(depthf(node->left)+1,depthf(node->right->left)+1);
-                node->right->depth = max(depthf(node->right->right)+1, depthf(node)+1);
+                node->depth = max(depthf(node->left) + 1, depthf(node->right->left) + 1);
+                node->right->depth = max(depthf(node->right->right) + 1, depthf(node) + 1);
                 left_rotation(node);
             }
             else
             {
-                node->right->depth = max(depthf(node->right->right)+1,depthf(node->right->left->right)+1);
-                node->depth = max(depthf(node->left)+1,depthf(node->right->left->left)+1);
-                node->right->left->depth = max(depthf(node)+1,depthf(node->right)+1);
+                node->right->depth = max(depthf(node->right->right) + 1, depthf(node->right->left->right) + 1);
+                node->depth = max(depthf(node->left) + 1, depthf(node->right->left->left) + 1);
+                node->right->left->depth = max(depthf(node) + 1, depthf(node->right) + 1);
                 right_rotation(node->right);
                 left_rotation(node);
             }
@@ -138,11 +149,11 @@ public:
             {
                 node->depth = d + 1;
             }
-            if (node==root && depthf(node->left) - depthf(node->right) > 1)
+            if (node == root && depthf(node->left) - depthf(node->right) > 1)
             {
                 root = node->left;
             }
-            else if (node==root && depthf(node->left) - depthf(node->right) < -1)
+            else if (node == root && depthf(node->left) - depthf(node->right) < -1)
             {
                 root = node->right;
             }
@@ -186,47 +197,63 @@ public:
         newnode->par = prev;
         balance(newnode);
     }
-    AVL *inorderPredecessor(AVL *head){
-        if (head==0) return head;
-        while (head->right!=0){
+    AVL *inorderPredecessor(AVL *head)
+    {
+        if (head == 0)
+            return head;
+        while (head->right != 0)
+        {
             head = head->right;
         }
         return head;
     }
 
-    AVL *inorderSuccessor(AVL *head){
-        if (head==0) return head;
-        while (head->left!=0){
+    AVL *inorderSuccessor(AVL *head)
+    {
+        if (head == 0)
+            return head;
+        while (head->left != 0)
+        {
             head = head->left;
         }
         return head;
     }
 
-    void remove(int data,AVL *temp = root){
+    void remove(int data, AVL *temp = root)
+    {
         AVL *prev = 0;
-        while (temp!=0 && temp->data!=data){
+        while (temp != 0 && temp->data != data)
+        {
             prev = temp;
-            if (data<temp->data){
+            if (data < temp->data)
+            {
                 temp = temp->left;
             }
-            else if (data>temp->data){
+            else if (data > temp->data)
+            {
                 temp = temp->right;
             }
         }
-        if (temp->data!=data){
+        if (temp->data != data)
+        {
             return;
         }
         AVL *l = inorderPredecessor(temp->left);
         AVL *r = inorderSuccessor(temp->right);
-        if (l==0 && r==0){
-            if (prev==0){
+        if (l == 0 && r == 0)
+        {
+            if (prev == 0)
+            {
                 root = 0;
             }
-            else{
-                if (prev->left==temp){
+            else
+            {
+                if (prev->left == temp)
+                {
                     prev->left = 0;
                 }
-                else{
+                else
+                {
                     prev->right = 0;
                 }
                 free(temp);
@@ -236,38 +263,47 @@ public:
         }
         // while going upward from this node till root - we will keep balancing
         AVL *start;
-        if (l!=0){
-            if (l==temp->left){
+        if (l != 0)
+        {
+            if (l == temp->left)
+            {
                 l->right = temp->right;
-                if (l->right!=0){
+                if (l->right != 0)
+                {
                     l->right->par = l;
                 }
                 start = l;
             }
-            else{
-                if (l->left!=0){
+            else
+            {
+                if (l->left != 0)
+                {
                     l->left->par = l->par;
                 }
                 start = l->par;
                 l->par->right = l->left;
                 l->right = temp->right;
                 l->par = 0;
-                if (l->right!=0){
+                if (l->right != 0)
+                {
                     l->right->par = l;
                 }
                 l->left = temp->left;
-                temp->left->par  = l;
-
+                temp->left->par = l;
             }
-            if (prev==0){
+            if (prev == 0)
+            {
                 root = l;
             }
-            else{
-                if (prev->left==temp){
+            else
+            {
+                if (prev->left == temp)
+                {
                     prev->left = l;
                     l->par = prev;
                 }
-                else{
+                else
+                {
                     prev->right = l;
                     l->par = prev;
                 }
@@ -276,37 +312,47 @@ public:
             balance(start);
             return;
         }
-        else{
-            if (r==temp->right){
+        else
+        {
+            if (r == temp->right)
+            {
                 r->left = temp->left;
-                if (r->left!=0){
+                if (r->left != 0)
+                {
                     r->left->par = r;
                 }
                 start = r;
             }
-            else{
-                if (r->right!=0){
+            else
+            {
+                if (r->right != 0)
+                {
                     r->right->par = r->par;
                 }
                 start = r->par;
                 r->par->left = r->right;
                 r->left = temp->left;
                 r->par = 0;
-                if (r->left!=0){
+                if (r->left != 0)
+                {
                     r->left->par = r;
                 }
                 r->right = temp->right;
-                temp->right->par  = r;
+                temp->right->par = r;
             }
-            if (prev==0){
+            if (prev == 0)
+            {
                 root = r;
             }
-            else{
-                if (prev->right==temp){
+            else
+            {
+                if (prev->right == temp)
+                {
                     prev->right = r;
                     r->par = prev;
                 }
-                else{
+                else
+                {
                     prev->left = r;
                     r->par = prev;
                 }
@@ -316,24 +362,117 @@ public:
             return;
         }
     }
-    bool search(int data){
+    bool search(int data)
+    {
         AVL *temp = root;
-        while (temp!=0 && temp->data!=data){
-            if (data<temp->data){
+        while (temp != 0 && temp->data != data)
+        {
+            if (data < temp->data)
+            {
                 temp = temp->left;
             }
-            else{
+            else
+            {
                 temp = temp->right;
             }
         }
-        if (temp!=0){
+        if (temp != 0)
+        {
             return 1;
         }
         return 0;
     }
+    void printTree()
+    {
+        cout << "\n\n";
+        map<int, int> dist, offset;
+        map<int, vector<AVL *>> mp;
+        queue<AVL *> q;
+        int maxdepth = 0;
+        q.push(root);
+        dist[root->data] = 0;
+        mp[0].push_back(root);
+        while (!q.empty())
+        {
+            AVL *curr = q.front();
+            q.pop();
+            if (curr->left != 0)
+            {
+                q.push(curr->left);
+                dist[curr->left->data] = dist[curr->data] + 1;
+                mp[dist[curr->left->data]].push_back(curr->left);
+                maxdepth = max(maxdepth, dist[curr->left->data]);
+            }
+            if (curr->right != 0)
+            {
+                q.push(curr->right);
+                dist[curr->right->data] = dist[curr->data] + 1;
+                mp[dist[curr->right->data]].push_back(curr->right);
+                maxdepth = max(maxdepth, dist[curr->right->data]);
+            }
+        }
+        printf("%72d\n\n", root->data);
+        offset[root->data] = 70;
+        vector<int> hashing(100, 0);
+        hashing[root->data] = 1;
+        int k = maxdepth + 1;
+        for (int i = 1; i <= maxdepth; i++)
+        {
+            int cnt = 0;
+            for (auto z : mp[i])
+            {
+                if (hashing[z->data])
+                    continue;
+                while (cnt < offset[z->par->data] - k * (maxdepth - i + 1))
+                {
+                    cout << ' ';
+                    cnt++;
+                }
+                if (z->par->left != 0)
+                {
+                    offset[z->data] = cnt;
+                    cout << (z->data);
+                    cnt += digitCount(z->data);
+                    hashing[z->data] = 1;
+                    while (cnt < offset[z->par->data])
+                    {
+                        cnt++;
+                        cout << '_';
+                    }
+                    cout << '|';
+                    cnt++;
+                }
+                if (z->par->right != 0)
+                {
+                    if (z->par->left == 0)
+                    {
+                        while (cnt < offset[z->par->data])
+                        {
+                            cnt++;
+                            cout << ' ';
+                        }
+                        cout << '|';
+                        cnt++;
+                    }
+                    offset[z->par->right->data] = offset[z->par->data] - 2 + k * (maxdepth - i + 1);
+                    while (cnt < offset[z->par->right->data])
+                    {
+                        cnt++;
+                        cout << '_';
+                    }
+                    cout << z->par->right->data;
+                    cnt += digitCount(z->par->right->data);
+                    hashing[z->par->right->data] = 1;
+                }
+            }
+            cout << "\n\n";
+            k--;
+        }
+        cout << "\n\n\n";
+    }
 };
 
-AVL* AVL::root = 0;
+AVL *AVL::root = 0;
 
 int main()
 {
@@ -347,15 +486,18 @@ int main()
     s.insert(4);
     s.insert(13);
     s.insert(12);
+    s.printTree();
     s.insert(8);
     s.insert(60);
     s.insert(19);
     s.insert(16);
+    s.printTree();
     s.remove(19);
     s.remove(11);
-    
-    cout<<s.search(20)<<endl;
-    cout<<s.search(89)<<endl;
-    s.dfs();
+
+    // cout << s.search(20) << endl;
+    // cout << s.search(89) << endl;
+    // s.dfs();
+    s.printTree();
     return 0;
 }

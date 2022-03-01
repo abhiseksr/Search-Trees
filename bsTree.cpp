@@ -1,7 +1,18 @@
 /* Binary Search tree implementation in C/C++
 Author - Abhishek Kumar */
 #include <iostream>
+#include<queue>
+#include<map>
 using namespace std;
+
+int digitCount(int n){
+    int cnt = 0;
+    while (n){
+        cnt++;
+        n /= 10;
+    }
+    return cnt;
+}
 
 class BST
 {
@@ -206,6 +217,80 @@ public:
         }
         return 0;
     }
+    void printTree(){
+        cout<<"\n\n";
+        map<int,int> dist, offset;
+        map<int,vector<BST*>>  mp;
+        queue<BST *> q;
+        int maxdepth = 0;
+        q.push(root);
+        dist[root->data] = 0;
+        mp[0].push_back(root);
+        while (!q.empty()){
+            BST *curr = q.front();
+            q.pop();
+            if (curr->left!=0){
+                q.push(curr->left);
+                dist[curr->left->data] = dist[curr->data]+1;
+                mp[dist[curr->left->data]].push_back(curr->left);
+                maxdepth = max(maxdepth,dist[curr->left->data]);
+            }
+            if (curr->right!=0){
+                q.push(curr->right);
+                dist[curr->right->data] = dist[curr->data]+1;
+                mp[dist[curr->right->data]].push_back(curr->right);
+                maxdepth = max(maxdepth,dist[curr->right->data]);
+            }
+        }
+        printf("%72d\n\n",root->data);
+        offset[root->data] = 70;
+        vector<int> hashing(100,0);
+        hashing[root->data] = 1;
+        int k = maxdepth+1;
+        for (int i=1;i<=maxdepth;i++){
+            int cnt = 0;
+            for (auto z: mp[i]){
+                if (hashing[z->data]) continue;
+                while (cnt<offset[z->par->data]-k*(maxdepth-i+1)){
+                    cout<<' ';
+                    cnt++;
+                }
+                if (z->par->left != 0){
+                    offset[z->data] = cnt;
+                    cout<<(z->data);
+                    cnt += digitCount(z->data);
+                    hashing[z->data] = 1;
+                    while (cnt<offset[z->par->data]){
+                        cnt++;
+                        cout<<'_';
+                    }
+                    cout<<'|';
+                    cnt++;
+                }
+                if (z->par->right !=0){
+                    if (z->par->left==0){
+                        while (cnt<offset[z->par->data]){
+                            cnt++;
+                            cout<<' ';
+                        }
+                        cout<<'|';
+                        cnt++;
+                    }
+                    offset[z->par->right->data] = offset[z->par->data] -2 +  k*(maxdepth-i+1);
+                    while (cnt<offset[z->par->right->data]){
+                        cnt++;
+                        cout<<'_';
+                    }
+                    cout<<z->par->right->data;
+                    cnt += digitCount(z->par->right->data);
+                    hashing[z->par->right->data] = 1;
+                }
+            }
+            cout<<"\n\n";
+            k--;
+        }
+        cout<<"\n\n\n";
+    }
 };
 
 BST* BST::root = 0;
@@ -214,23 +299,30 @@ int main()
 {
 
     BST s;
-    s.insert(14);
+    s.insert(15);
     s.insert(17);
     s.insert(11);
     s.insert(7);
     s.insert(53);
     s.insert(4);
+    s.insert(14);
     s.insert(13);
     s.insert(12);
     s.insert(8);
     s.insert(60);
     s.insert(19);
     s.insert(16);
-    s.remove(19);
-    s.remove(11);
+    s.insert(65);
+    s.insert(55);
+    s.insert(9);
+    s.insert(10);
+    s.remove(55);
+    s.remove(14);
     
     cout<<s.search(20)<<endl;
     cout<<s.search(89)<<endl;
     s.dfs();
+    cout<<endl;
+    s.printTree();
     return 0;
 }
