@@ -244,7 +244,7 @@ public:
         }
         printf("%72d\n\n",root->data);
         offset[root->data] = 70;
-        vector<int> hashing(100,0);
+        map<int,int> hashing;
         hashing[root->data] = 1;
         int k = maxdepth+1;
         for (int i=1;i<=maxdepth;i++){

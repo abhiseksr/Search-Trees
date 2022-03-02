@@ -382,7 +382,7 @@ public:
         }
         printf("%72d\n\n", root->data);
         offset[root->data] = 70;
-        vector<int> hashing(100, 0);
+        map<int,int> hashing;
         hashing[root->data] = 1;
         int k = maxdepth + 1;
         for (int i = 1; i <= maxdepth; i++)
@@ -453,11 +453,13 @@ int main()
     s.insert(7);
     s.insert(13);
     s.insert(16);
+    s.insert(-2);
+    s.insert(3322);
     s.insert(50);
     s.insert(-9);
     // cout << s.search(12) << endl;
     s.printTree();
-    s.remove(13);
+    s.remove(17);
     s.printTree();
     // cout << s.search(16) << endl;
     // cout << s.search(15) << endl;
