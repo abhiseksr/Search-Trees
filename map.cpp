@@ -1,4 +1,4 @@
-/* Map tree implementation in C/C++
+/* Map implementation in C/C++
 Author - Abhishek Kumar */
 #include <iostream>
 #include <queue>
