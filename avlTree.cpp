@@ -151,11 +151,15 @@ public:
             }
             if (node == root && depthf(node->left) - depthf(node->right) > 1)
             {
-                root = node->left;
+                root = node->left->right;
+                helper(node);
+                break;
             }
             else if (node == root && depthf(node->left) - depthf(node->right) < -1)
             {
-                root = node->right;
+                root = node->right->left;
+                helper(node);
+                break;
             }
             helper(node);
         }
