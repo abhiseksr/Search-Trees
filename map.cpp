@@ -10,10 +10,11 @@ public:
     Map *left, *right, *par;
     int first, second, depth;
 
-    int & operator[](int key){
+    int &operator[](int key)
+    {
         return insert(key)->second;
     }
-    
+
     Map *create(int first)
     {
         Map *newnode = (Map *)malloc(sizeof(Map));
@@ -139,7 +140,7 @@ public:
                 helper(node);
                 break;
             }
-            else if (node== root && depthf(node->left) - depthf(node->right) < -1)
+            else if (node == root && depthf(node->left) - depthf(node->right) < -1)
             {
                 if (depthf(node->right->right) > depthf(node->right->left))
                 {
@@ -156,7 +157,7 @@ public:
         }
     }
 
-    Map* insert(int first)
+    Map *insert(int first)
     {
         Map *newnode = create(first);
         if (root == 0)
@@ -228,10 +229,11 @@ int main()
     m[-83] = 4;
     m[66] = 9;
     m[197] = 8;
-    int arr[] = {132,3334,42,-83,66,197,83,56,1,0};
-    for (int i=0;i<sizeof(arr)/sizeof(int);i++){
-        cout<<arr[i]<<":"<<m.search(arr[i])<<' ';
+    int arr[] = {132, 3334, 42, -83, 66, 197, 83, 56, 1, 0};
+    for (int i = 0; i < sizeof(arr) / sizeof(int); i++)
+    {
+        cout << arr[i] << ":" << m.search(arr[i]) << ' ';
     }
-    cout<<endl;
+    cout << endl;
     return 0;
 }

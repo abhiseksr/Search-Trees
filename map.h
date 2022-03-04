@@ -1,5 +1,6 @@
 /* Map implementation in C/C++
 Author - Abhishek Kumar */
+#pragma once
 #include <iostream>
 using namespace std;
 
