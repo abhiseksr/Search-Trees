@@ -6,15 +6,27 @@ using namespace std;
 
 class Map
 {
-public:
-    Map *root = 0;
-    Map *left, *right, *par;
-    int first, second, depth;
-
-    int & operator[](int key){
-        return insert(key)->second;
+private:
+    const int search(int first) const
+    {
+        Map *temp = root;
+        while (temp != 0 && temp->first != first)
+        {
+            if (first < temp->first)
+            {
+                temp = temp->left;
+            }
+            else
+            {
+                temp = temp->right;
+            }
+        }
+        if (temp != 0)
+        {
+            return temp->second;
+        }
+        return 0;
     }
-    
     Map *create(int first)
     {
         Map *newnode = (Map *)malloc(sizeof(Map));
@@ -69,14 +81,6 @@ public:
         y->left = x;
         x->par = y;
     }
-
-    int depthf(Map *node)
-    {
-        if (node == 0)
-            return 0;
-        return node->depth;
-    }
-
     // draw the initial and final graph of each cases(take case where every node has two child)\
     and update the nodes depth before rotation
     void helper(Map *node)
@@ -140,7 +144,7 @@ public:
                 helper(node);
                 break;
             }
-            else if (node== root && depthf(node->left) - depthf(node->right) < -1)
+            else if (node == root && depthf(node->left) - depthf(node->right) < -1)
             {
                 if (depthf(node->right->right) > depthf(node->right->left))
                 {
@@ -157,7 +161,29 @@ public:
         }
     }
 
-    Map* insert(int first)
+public:
+    Map *root = 0;
+    Map *left, *right, *par;
+    int first, second, depth;
+
+    int &operator[](int key)
+    {
+        return insert(key)->second;
+    }
+
+    const int &operator[](int key) const
+    {
+        return search(key);
+    }
+
+    int depthf(Map *node)
+    {
+        if (node == 0)
+            return 0;
+        return node->depth;
+    }
+
+    Map *insert(int first)
     {
         Map *newnode = create(first);
         if (root == 0)
@@ -194,25 +220,5 @@ public:
         newnode->par = prev;
         balance(newnode);
         return newnode;
-    }
-    int search(int first)
-    {
-        Map *temp = root;
-        while (temp != 0 && temp->first != first)
-        {
-            if (first < temp->first)
-            {
-                temp = temp->left;
-            }
-            else
-            {
-                temp = temp->right;
-            }
-        }
-        if (temp != 0)
-        {
-            return temp->second;
-        }
-        return 0;
     }
 };

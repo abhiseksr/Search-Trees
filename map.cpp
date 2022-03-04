@@ -5,16 +5,27 @@ using namespace std;
 
 class Map
 {
-public:
-    static class Map *root;
-    Map *left, *right, *par;
-    int first, second, depth;
-
-    int &operator[](int key)
+private:
+    const int search(int first) const
     {
-        return insert(key)->second;
+        Map *temp = root;
+        while (temp != 0 && temp->first != first)
+        {
+            if (first < temp->first)
+            {
+                temp = temp->left;
+            }
+            else
+            {
+                temp = temp->right;
+            }
+        }
+        if (temp != 0)
+        {
+            return temp->second;
+        }
+        return 0;
     }
-
     Map *create(int first)
     {
         Map *newnode = (Map *)malloc(sizeof(Map));
@@ -69,14 +80,6 @@ public:
         y->left = x;
         x->par = y;
     }
-
-    int depthf(Map *node)
-    {
-        if (node == 0)
-            return 0;
-        return node->depth;
-    }
-
     // draw the initial and final graph of each cases(take case where every node has two child)\
     and update the nodes depth before rotation
     void helper(Map *node)
@@ -157,6 +160,28 @@ public:
         }
     }
 
+public:
+    static class Map *root;
+    Map *left, *right, *par;
+    int first, second, depth;
+
+    int &operator[](int key)
+    {
+        return insert(key)->second;
+    }
+
+    const int &operator[](int key) const
+    {
+        return search(key);
+    }
+
+    int depthf(Map *node)
+    {
+        if (node == 0)
+            return 0;
+        return node->depth;
+    }
+
     Map *insert(int first)
     {
         Map *newnode = create(first);
@@ -195,26 +220,6 @@ public:
         balance(newnode);
         return newnode;
     }
-    int search(int first)
-    {
-        Map *temp = root;
-        while (temp != 0 && temp->first != first)
-        {
-            if (first < temp->first)
-            {
-                temp = temp->left;
-            }
-            else
-            {
-                temp = temp->right;
-            }
-        }
-        if (temp != 0)
-        {
-            return temp->second;
-        }
-        return 0;
-    }
 };
 
 Map *Map::root = 0;
@@ -232,7 +237,7 @@ int main()
     int arr[] = {132, 3334, 42, -83, 66, 197, 83, 56, 1, 0};
     for (int i = 0; i < sizeof(arr) / sizeof(int); i++)
     {
-        cout << arr[i] << ":" << m.search(arr[i]) << ' ';
+        cout << arr[i] << ":" << m[arr[i]] << ' ';
     }
     cout << endl;
     return 0;

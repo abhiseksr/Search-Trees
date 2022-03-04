@@ -33,16 +33,16 @@ void printer(T *root)
         if (curr->left != 0)
         {
             q.push(curr->left);
-            dist[curr->left->data] = dist.search(curr->data) + 1;
-            mp[dist.search(curr->left->data)].push_back(curr->left);
-            maxdepth = max(maxdepth, dist.search(curr->left->data));
+            dist[curr->left->data] = dist[(curr->data)] + 1;
+            mp[dist[curr->left->data]].push_back(curr->left);
+            maxdepth = max(maxdepth, dist[curr->left->data]);
         }
         if (curr->right != 0)
         {
             q.push(curr->right);
-            dist[curr->right->data] = dist.search(curr->data) + 1;
-            mp[dist.search(curr->right->data)].push_back(curr->right);
-            maxdepth = max(maxdepth, dist.search(curr->right->data));
+            dist[curr->right->data] = dist[curr->data] + 1;
+            mp[dist[curr->right->data]].push_back(curr->right);
+            maxdepth = max(maxdepth, dist[curr->right->data]);
         }
     }
     printf("%72d\n\n", root->data);
@@ -55,9 +55,9 @@ void printer(T *root)
         int cnt = 0;
         for (auto z : mp[i])
         {
-            if (hashing.search(z->data))
+            if (hashing[z->data])
                 continue;
-            while (cnt < offset.search(z->par->data) - k * (maxdepth - i + 1))
+            while (cnt < offset[z->par->data] - k * (maxdepth - i + 1))
             {
                 cout << ' ';
                 cnt++;
@@ -68,7 +68,7 @@ void printer(T *root)
                 cout << (z->data);
                 cnt += digitCount(z->data);
                 hashing[z->data] = 1;
-                while (cnt < offset.search(z->par->data))
+                while (cnt < offset[z->par->data])
                 {
                     cnt++;
                     cout << '_';
@@ -80,7 +80,7 @@ void printer(T *root)
             {
                 if (z->par->left == 0)
                 {
-                    while (cnt < offset.search(z->par->data))
+                    while (cnt < offset[z->par->data])
                     {
                         cnt++;
                         cout << ' ';
@@ -88,8 +88,8 @@ void printer(T *root)
                     cout << '|';
                     cnt++;
                 }
-                offset[z->par->right->data] = offset.search(z->par->data) - 2 + k * (maxdepth - i + 1);
-                while (cnt < offset.search(z->par->right->data))
+                offset[z->par->right->data] = offset[z->par->data] - 2 + k * (maxdepth - i + 1);
+                while (cnt < offset[z->par->right->data])
                 {
                     cnt++;
                     cout << '_';
