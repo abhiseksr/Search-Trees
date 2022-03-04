@@ -2,7 +2,7 @@
 Author - Abhishek Kumar */
 #include <iostream>
 #include<queue>
-#include<map>
+#include "map.h"
 using namespace std;
 
 int digitCount(int n){
@@ -354,8 +354,8 @@ public:
     void printTree()
     {
         cout << "\n\n";
-        map<int, int> dist, offset;
-        map<int, vector<Splay *>> mp;
+        Map dist, offset;
+        vector<Splay *> mp[200];
         queue<Splay *> q;
         int maxdepth = 0;
         q.push(root);
@@ -368,21 +368,21 @@ public:
             if (curr->left != 0)
             {
                 q.push(curr->left);
-                dist[curr->left->data] = dist[curr->data] + 1;
-                mp[dist[curr->left->data]].push_back(curr->left);
-                maxdepth = max(maxdepth, dist[curr->left->data]);
+                dist[curr->left->data] = dist.search(curr->data) + 1;
+                mp[dist.search(curr->left->data)].push_back(curr->left);
+                maxdepth = max(maxdepth, dist.search(curr->left->data));
             }
             if (curr->right != 0)
             {
                 q.push(curr->right);
-                dist[curr->right->data] = dist[curr->data] + 1;
-                mp[dist[curr->right->data]].push_back(curr->right);
-                maxdepth = max(maxdepth, dist[curr->right->data]);
+                dist[curr->right->data] = dist.search(curr->data) + 1;
+                mp[dist.search(curr->right->data)].push_back(curr->right);
+                maxdepth = max(maxdepth, dist.search(curr->right->data));
             }
         }
         printf("%72d\n\n", root->data);
         offset[root->data] = 70;
-        map<int,int> hashing;
+        Map hashing;
         hashing[root->data] = 1;
         int k = maxdepth + 1;
         for (int i = 1; i <= maxdepth; i++)
@@ -390,9 +390,9 @@ public:
             int cnt = 0;
             for (auto z : mp[i])
             {
-                if (hashing[z->data])
+                if (hashing.search(z->data))
                     continue;
-                while (cnt < offset[z->par->data] - k * (maxdepth - i + 1))
+                while (cnt < offset.search(z->par->data) - k * (maxdepth - i + 1))
                 {
                     cout << ' ';
                     cnt++;
@@ -403,7 +403,7 @@ public:
                     cout << (z->data);
                     cnt += digitCount(z->data);
                     hashing[z->data] = 1;
-                    while (cnt < offset[z->par->data])
+                    while (cnt < offset.search(z->par->data))
                     {
                         cnt++;
                         cout << '_';
@@ -415,7 +415,7 @@ public:
                 {
                     if (z->par->left == 0)
                     {
-                        while (cnt < offset[z->par->data])
+                        while (cnt < offset.search(z->par->data))
                         {
                             cnt++;
                             cout << ' ';
@@ -423,8 +423,8 @@ public:
                         cout << '|';
                         cnt++;
                     }
-                    offset[z->par->right->data] = offset[z->par->data] - 2 + k * (maxdepth - i + 1);
-                    while (cnt < offset[z->par->right->data])
+                    offset[z->par->right->data] = offset.search(z->par->data) - 2 + k * (maxdepth - i + 1);
+                    while (cnt < offset.search(z->par->right->data))
                     {
                         cnt++;
                         cout << '_';

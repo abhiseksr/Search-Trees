@@ -6,7 +6,7 @@ using namespace std;
 class Map
 {
 public:
-    static class Map *root;
+    Map *root = 0;
     Map *left, *right, *par;
     int first, second, depth;
 
@@ -215,23 +215,3 @@ public:
         return 0;
     }
 };
-
-Map *Map::root = 0;
-
-int main()
-{
-
-    Map m;
-    m[132] = 3;
-    m[3334] = 5;
-    m[42] = 7;
-    m[-83] = 4;
-    m[66] = 9;
-    m[197] = 8;
-    int arr[] = {132,3334,42,-83,66,197,83,56,1,0};
-    for (int i=0;i<sizeof(arr)/sizeof(int);i++){
-        cout<<arr[i]<<":"<<m.search(arr[i])<<' ';
-    }
-    cout<<endl;
-    return 0;
-}
