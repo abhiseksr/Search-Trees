@@ -57,7 +57,7 @@ string compress(string s,map<char,string> &mp){
     cout<<strn<<endl;
     cout<<"\nOriginal size: "<<s.size()*8<<" bytes.";
     cout<<"\nCompressed size: "<<strn.size()<<" bytes.\n";
-    cout<<"\nPercentage reduction = "<<1.0*100*strn.size()/(s.size()*8)<<endl;
+    cout<<"\nPercentage reduction = "<<100-1.0*100*strn.size()/(s.size()*8)<<endl;
     return strn;
 }
 
